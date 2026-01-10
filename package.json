@@ -69,5 +69,8 @@
     "vite-plugin-dts": "^4.3.0",
     "vite-plugin-node": "^7.0.0",
     "vitest": "^4.0.13"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.30.1"
   }
 }
