@@ -25,7 +25,7 @@ import {
     createLoggerAdapter,
 } from '@eldrforge/core';
 import { CommandError, ValidationError, ExternalDependencyError, checkForFileDependencies, logFileDependencyWarning, logFileDependencySuggestions, createStorage } from '@eldrforge/shared';
-import { run, validateString, stageFiles, unstageAll, getStagedFiles, verifyStagedFiles, safeJsonParse, validatePackageJson } from '@eldrforge/git-tools';
+import { run, validateString, stageFiles, unstageAll, verifyStagedFiles, safeJsonParse, validatePackageJson } from '@eldrforge/git-tools';
 import { getRecentClosedIssuesForCommit } from '@eldrforge/github-tools';
 import {
     createCompletionWithRetry,
@@ -544,7 +544,7 @@ async function createSingleSplitCommit(
 async function executeSplitCommits(
     options: SplitCommitOptions
 ): Promise<SplitCommitResult> {
-    const { splits, runConfig, isDryRun, interactive, logger, storage } = options;
+    const { splits, isDryRun, interactive, logger } = options;
 
     const result: SplitCommitResult = {
         success: false,
@@ -704,7 +704,6 @@ const executeInternal = async (runConfig: Config) => {
     validateSenditState(runConfig, cached, isDryRun, logger);
 
     let diffContent = '';
-    let isUsingFileContent = false;
     const maxDiffBytes = runConfig.commit?.maxDiffBytes ?? DEFAULT_MAX_DIFF_BYTES;
     const options = {
         cached,
@@ -779,7 +778,6 @@ const executeInternal = async (runConfig: Config) => {
                 if (fileContent && fileContent.trim().length > 0) {
                     logger.info('FILE_CONTENT_USING: Using file content for commit message generation | Content Length: %d characters | Source: file content', fileContent.length);
                     diffContent = fileContent;
-                    isUsingFileContent = true;
                     hasActualChanges = true; // We have content to work with
                 } else {
                     if (runConfig.commit?.sendit) {
