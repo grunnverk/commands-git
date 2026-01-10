@@ -1,6 +1,6 @@
 {
   "name": "@eldrforge/commands-git",
-  "version": "0.1.0",
+  "version": "0.1.1-dev.0",
   "description": "Git workflow commands for kodrdriv",
   "main": "dist/index.js",
   "type": "module",
@@ -70,4 +70,3 @@
     "vitest": "^4.0.13"
   }
 }
-
