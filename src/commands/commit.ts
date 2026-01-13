@@ -441,6 +441,51 @@ interface SplitCommitResult {
 }
 
 /**
+ * Deduplicate files across splits - each file can only be in one split
+ * Later splits lose files that were already claimed by earlier splits
+ * Returns filtered splits with empty splits removed
+ */
+function deduplicateSplits(
+    splits: CommitSplit[],
+    logger: any
+): CommitSplit[] {
+    const claimedFiles = new Set<string>();
+    const result: CommitSplit[] = [];
+
+    for (const split of splits) {
+        // Find files in this split that haven't been claimed yet
+        const uniqueFiles: string[] = [];
+        const duplicates: string[] = [];
+
+        for (const file of split.files) {
+            if (claimedFiles.has(file)) {
+                duplicates.push(file);
+            } else {
+                uniqueFiles.push(file);
+                claimedFiles.add(file);
+            }
+        }
+
+        // Log if duplicates were found
+        if (duplicates.length > 0) {
+            logger.warn(`Removing duplicate files from split "${split.message.split('\n')[0]}": ${duplicates.join(', ')}`);
+        }
+
+        // Only include split if it has files
+        if (uniqueFiles.length > 0) {
+            result.push({
+                ...split,
+                files: uniqueFiles
+            });
+        } else {
+            logger.warn(`Skipping empty split after deduplication: "${split.message.split('\n')[0]}"`);
+        }
+    }
+
+    return result;
+}
+
+/**
  * Interactive review of a single split before committing
  */
 async function reviewSplitInteractively(
@@ -910,8 +955,20 @@ const executeInternal = async (runConfig: Config) => {
         if (autoSplitEnabled) {
             logger.info('\n🔄 Auto-split enabled - creating separate commits...\n');
 
+            // Deduplicate files across splits to prevent staging errors
+            // (AI sometimes suggests the same file in multiple splits)
+            const deduplicatedSplits = deduplicateSplits(agenticResult.suggestedSplits, logger);
+
+            if (deduplicatedSplits.length === 0) {
+                throw new CommandError(
+                    'All splits were empty after deduplication - no files to commit',
+                    'SPLIT_EMPTY',
+                    false
+                );
+            }
+
             const splitResult = await executeSplitCommits({
-                splits: agenticResult.suggestedSplits,
+                splits: deduplicatedSplits,
                 runConfig,
                 isDryRun,
                 interactive: !!(runConfig.commit?.interactive && !runConfig.commit?.sendit),
