@@ -44,7 +44,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "@eldrforge/ai-service": "^0.1.22",
-    "@eldrforge/core": "^0.1.3",
+    "@eldrforge/core": "^0.1.4",
     "@eldrforge/git-tools": "^0.1.22",
     "@eldrforge/github-tools": "^0.1.21",
     "@eldrforge/shared": "^0.1.10",
