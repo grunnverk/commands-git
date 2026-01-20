@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-import { getLogger, Config } from '@eldrforge/core';
+import { Config } from '@eldrforge/core';
 import { run } from '@eldrforge/git-tools';
 import { PerformanceTimer } from '../util/performance';
+import { getMcpAwareLogger } from '../util/mcpLogger';
 import path from 'path';
 
 /**
@@ -9,14 +10,14 @@ import path from 'path';
  * Expects the package to have a "precommit" script in package.json.
  */
 export const execute = async (runConfig: Config): Promise<string> => {
-    const logger = getLogger();
+    const logger = getMcpAwareLogger();
     const isDryRun = runConfig.dryRun || false;
     const packageDir = process.cwd();
 
     // Verify precommit script exists
     const fs = await import('fs/promises');
     const packageJsonPath = path.join(packageDir, 'package.json');
-    
+
     let packageName = packageDir;
     try {
         const packageJsonContent = await fs.readFile(packageJsonPath, 'utf-8');
