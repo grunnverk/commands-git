@@ -920,7 +920,7 @@ const executeInternal = async (runConfig: Config) => {
     logger.debug('Changed files for analysis: %d files', changedFiles.length);
 
     // Run agentic commit generation
-    logger.info('COMMIT_AI_GENERATION: Starting AI-powered commit message generation | Model: %s | Reasoning: %s | Files: %d', 
+    logger.info('COMMIT_AI_GENERATION: Starting AI-powered commit message generation | Model: %s | Reasoning: %s | Files: %d',
         aiConfig.commands?.commit?.model || aiConfig.model || 'gpt-4o-mini',
         aiConfig.commands?.commit?.reasoning || aiConfig.reasoning || 'low',
         changedFiles.length);
