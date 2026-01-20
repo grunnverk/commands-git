@@ -13,15 +13,17 @@ export const execute = async (runConfig: Config): Promise<string> => {
     const logger = getMcpAwareLogger();
     const isDryRun = runConfig.dryRun || false;
     const packageDir = process.cwd();
+    const shouldFix = runConfig.precommit?.fix || false;
 
     // Verify precommit script exists
     const fs = await import('fs/promises');
     const packageJsonPath = path.join(packageDir, 'package.json');
 
     let packageName = packageDir;
+    let packageJson: any;
     try {
         const packageJsonContent = await fs.readFile(packageJsonPath, 'utf-8');
-        const packageJson = JSON.parse(packageJsonContent);
+        packageJson = JSON.parse(packageJsonContent);
         packageName = packageJson.name || packageDir;
 
         if (!packageJson.scripts?.precommit) {
@@ -32,6 +34,23 @@ export const execute = async (runConfig: Config): Promise<string> => {
             throw new Error(`No package.json found at ${packageJsonPath}`);
         }
         throw error;
+    }
+
+    // If --fix is enabled, try to run lint --fix before precommit
+    if (shouldFix && packageJson.scripts?.lint) {
+        const lintFixCommand = 'npm run lint -- --fix';
+        if (isDryRun) {
+            logger.info(`DRY RUN: Would execute: ${lintFixCommand}`);
+        } else {
+            try {
+                logger.info(`🔧 Running lint --fix before precommit checks: ${lintFixCommand}`);
+                await run(lintFixCommand, { cwd: packageDir });
+                logger.info(`✅ Lint fixes applied`);
+            } catch (error: any) {
+                // Log warning but continue with precommit - lint --fix may fail on some issues
+                logger.warn(`⚠️  Lint --fix had issues (continuing with precommit): ${error.message}`);
+            }
+        }
     }
 
     const commandToRun = 'npm run precommit';
