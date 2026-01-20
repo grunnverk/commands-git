@@ -729,6 +729,8 @@ const executeInternal = async (runConfig: Config) => {
     const isDryRun = runConfig.dryRun || false;
     const logger = getDryRunLogger(isDryRun);
 
+    logger.info('COMMIT_START: Starting commit message generation | Mode: %s', isDryRun ? 'dry-run' : 'live');
+
     // Track if user explicitly chose to skip in interactive mode
     let userSkippedCommit = false;
 
@@ -743,11 +745,14 @@ const executeInternal = async (runConfig: Config) => {
     }
 
     // Determine cached state with single, clear logic
+    logger.info('COMMIT_CHECK_STAGED: Checking for staged changes | Action: Analyzing git status');
     const cached = await determineCachedState(runConfig);
+    logger.info('COMMIT_STAGED_STATUS: Staged changes detected: %s | Cached: %s', cached ? 'yes' : 'no', cached);
 
     // Validate sendit state early - now returns boolean instead of throwing
     validateSenditState(runConfig, cached, isDryRun, logger);
 
+    logger.info('COMMIT_GENERATE_DIFF: Generating diff content | Max bytes: %d', runConfig.commit?.maxDiffBytes ?? DEFAULT_MAX_DIFF_BYTES);
     let diffContent = '';
     const maxDiffBytes = runConfig.commit?.maxDiffBytes ?? DEFAULT_MAX_DIFF_BYTES;
     const options = {
@@ -757,6 +762,7 @@ const executeInternal = async (runConfig: Config) => {
     };
     const diff = await Diff.create(options);
     diffContent = await diff.get();
+    logger.info('COMMIT_DIFF_GENERATED: Diff content generated | Size: %d bytes | Has changes: %s', diffContent.length, diffContent.trim().length > 0 ? 'yes' : 'no');
 
     // Check if there are actually any changes in the diff
     let hasActualChanges = diffContent.trim().length > 0;
@@ -914,6 +920,10 @@ const executeInternal = async (runConfig: Config) => {
     logger.debug('Changed files for analysis: %d files', changedFiles.length);
 
     // Run agentic commit generation
+    logger.info('COMMIT_AI_GENERATION: Starting AI-powered commit message generation | Model: %s | Reasoning: %s | Files: %d', 
+        aiConfig.commands?.commit?.model || aiConfig.model || 'gpt-4o-mini',
+        aiConfig.commands?.commit?.reasoning || aiConfig.reasoning || 'low',
+        changedFiles.length);
     const agenticResult = await runAgenticCommit({
         changedFiles,
         diffContent,
