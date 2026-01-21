@@ -61,3 +61,5 @@ For AI agents and developers:
 Apache-2.0
 
 TEST
+
+<!-- Build: 2026-01-15 15:59:12 UTC -->
