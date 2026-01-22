@@ -5,7 +5,7 @@
  * console output must be suppressed to avoid polluting the JSON-RPC stream.
  * This module provides a logger wrapper that respects MCP mode.
  */
-import { getLogger as getCoreLogger } from '@eldrforge/core';
+import { getLogger as getCoreLogger } from '@grunnverk/core';
 
 /**
  * Simple logger interface - avoids exposing winston types

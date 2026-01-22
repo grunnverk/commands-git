@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { Config } from '@eldrforge/core';
+import type { Config } from '@grunnverk/core';
 
 // Mock ALL dependencies
-vi.mock('@eldrforge/core', () => ({
+vi.mock('@grunnverk/core', () => ({
     DEFAULT_EXCLUDED_PATTERNS: ['node_modules'],
     DEFAULT_OUTPUT_DIRECTORY: 'output',
     Diff: {
@@ -19,7 +19,7 @@ vi.mock('@eldrforge/core', () => ({
     getOutputPath: vi.fn((d, f) => `${d}/${f}`),
 }));
 
-vi.mock('@eldrforge/shared', () => ({
+vi.mock('@grunnverk/shared', () => ({
     ValidationError: class ValidationError extends Error {},
     ExternalDependencyError: class ExternalDependencyError extends Error {},
     createStorage: vi.fn(() => ({
@@ -31,7 +31,7 @@ vi.mock('@eldrforge/shared', () => ({
     checkForFileDependencies: vi.fn(() => []),
 }));
 
-vi.mock('@eldrforge/git-tools', () => ({
+vi.mock('@grunnverk/git-tools', () => ({
     run: vi.fn(() => ({ stdout: '', stderr: '' })),
     validateString: vi.fn((s) => s),
     safeJsonParse: vi.fn((s) => JSON.parse(s)),
