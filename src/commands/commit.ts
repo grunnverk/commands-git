@@ -23,10 +23,10 @@ import {
     toAIConfig,
     createStorageAdapter,
     createLoggerAdapter,
-} from '@eldrforge/core';
-import { CommandError, ValidationError, ExternalDependencyError, checkForFileDependencies, logFileDependencyWarning, logFileDependencySuggestions, createStorage } from '@eldrforge/shared';
-import { run, validateString, stageFiles, unstageAll, verifyStagedFiles, safeJsonParse, validatePackageJson } from '@eldrforge/git-tools';
-import { getRecentClosedIssuesForCommit } from '@eldrforge/github-tools';
+} from '@grunnverk/core';
+import { CommandError, ValidationError, ExternalDependencyError, checkForFileDependencies, logFileDependencyWarning, logFileDependencySuggestions, createStorage } from '@grunnverk/shared';
+import { run, validateString, stageFiles, unstageAll, verifyStagedFiles, safeJsonParse, validatePackageJson } from '@grunnverk/git-tools';
+import { getRecentClosedIssuesForCommit } from '@grunnverk/github-tools';
 import {
     createCompletionWithRetry,
     getUserChoice,
@@ -39,7 +39,7 @@ import {
     runAgenticCommit,
     generateReflectionReport,
     createCommitPrompt,
-} from '@eldrforge/ai-service';
+} from '@grunnverk/ai-service';
 
 // Helper function to read context files
 async function readContextFiles(contextFiles: string[] | undefined, logger: any): Promise<string> {
@@ -1171,7 +1171,7 @@ export const execute = async (runConfig: Config): Promise<string> => {
         return await executeInternal(runConfig);
     } catch (error: any) {
         // Import getLogger for error handling
-        const { getLogger } = await import('@eldrforge/core');
+        const { getLogger } = await import('@grunnverk/core');
         const standardLogger = getLogger();
 
         if (error instanceof ValidationError || error instanceof ExternalDependencyError || error instanceof CommandError) {
