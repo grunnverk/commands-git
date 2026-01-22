@@ -1,8 +1,8 @@
 import path from 'path';
 import fs from 'fs/promises';
-import { getLogger } from '@eldrforge/core';
-import { runSecure } from '@eldrforge/git-tools';
-import { createStorage } from '@eldrforge/shared';
+import { getLogger } from '@grunnverk/core';
+import { runSecure } from '@grunnverk/git-tools';
+import { createStorage } from '@grunnverk/shared';
 
 const logger = getLogger();
 

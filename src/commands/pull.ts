@@ -15,9 +15,9 @@
  *   kodrdriv tree pull               # Pull all projects in tree
  */
 
-import { getDryRunLogger, getLogger, Config } from '@eldrforge/core';
-import { run, runSecure, getGitStatusSummary, getCurrentBranch } from '@eldrforge/git-tools';
-import { createStorage } from '@eldrforge/shared';
+import { getDryRunLogger, getLogger, Config } from '@grunnverk/core';
+import { run, runSecure, getGitStatusSummary, getCurrentBranch } from '@grunnverk/git-tools';
+import { createStorage } from '@grunnverk/shared';
 
 // Types for pull operation
 interface PullResult {

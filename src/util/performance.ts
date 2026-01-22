@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import path from 'path';
-import { getLogger } from '@eldrforge/core';
-import { safeJsonParse, validatePackageJson } from '@eldrforge/git-tools';
+import { getLogger } from '@grunnverk/core';
+import { safeJsonParse, validatePackageJson } from '@grunnverk/git-tools';
 
 // Performance timing helper
 export class PerformanceTimer {

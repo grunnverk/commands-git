@@ -3,8 +3,8 @@ import { PerformanceTimer, batchReadPackageJsonFiles, findAllPackageJsonFiles, s
 
 const mockLogger = { info: vi.fn(), warn: vi.fn(), verbose: vi.fn(), debug: vi.fn(), error: vi.fn(), silly: vi.fn() };
 
-vi.mock('@eldrforge/core', () => ({ getLogger: () => mockLogger }));
-vi.mock('@eldrforge/git-tools', () => ({ safeJsonParse: (content: string) => JSON.parse(content), validatePackageJson: (parsed: any) => parsed }));
+vi.mock('@grunnverk/core', () => ({ getLogger: () => mockLogger }));
+vi.mock('@grunnverk/git-tools', () => ({ safeJsonParse: (content: string) => JSON.parse(content), validatePackageJson: (parsed: any) => parsed }));
 
 describe('performance utils extended', () => {
     describe('PerformanceTimer', () => {

@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { Config } from '@eldrforge/core';
+import type { Config } from '@grunnverk/core';
 
 // Mock ALL dependencies
-vi.mock('@eldrforge/core', () => ({
+vi.mock('@grunnverk/core', () => ({
     DEFAULT_OUTPUT_DIRECTORY: 'output',
     getDryRunLogger: vi.fn(() => ({
         info: vi.fn(), debug: vi.fn(), warn: vi.fn(), error: vi.fn(), verbose: vi.fn()
@@ -13,7 +13,7 @@ vi.mock('@eldrforge/core', () => ({
     Config: {},
 }));
 
-vi.mock('@eldrforge/shared', () => ({
+vi.mock('@grunnverk/shared', () => ({
     FileOperationError: class FileOperationError extends Error {},
     createStorage: vi.fn(() => ({
         exists: vi.fn(() => false),
@@ -46,7 +46,7 @@ describe('clean command', () => {
     });
 
     it('handles existing directory', async () => {
-        const { createStorage } = await import('@eldrforge/shared');
+        const { createStorage } = await import('@grunnverk/shared');
         vi.mocked(createStorage).mockReturnValueOnce({
             exists: vi.fn(() => true),
             removeDirectory: vi.fn(),

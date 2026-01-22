@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock dependencies - must be defined before mocks
-vi.mock('@eldrforge/core', () => ({
+vi.mock('@grunnverk/core', () => ({
     getLogger: () => ({
         info: vi.fn(),
         warn: vi.fn(),
@@ -18,11 +18,11 @@ import {
     optimizePrecommitCommand,
 } from '../../src/util/precommitOptimizations';
 
-vi.mock('@eldrforge/git-tools', () => ({
+vi.mock('@grunnverk/git-tools', () => ({
     runSecure: vi.fn(),
 }));
 
-vi.mock('@eldrforge/shared', () => ({
+vi.mock('@grunnverk/shared', () => ({
     createStorage: () => ({
         exists: vi.fn().mockResolvedValue(false),
     }),

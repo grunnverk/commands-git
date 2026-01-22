@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { Config } from '@eldrforge/core';
-import { run } from '@eldrforge/git-tools';
+import { Config } from '@grunnverk/core';
+import { run } from '@grunnverk/git-tools';
 import { PerformanceTimer } from '../util/performance';
 import { getMcpAwareLogger } from '../util/mcpLogger';
 import path from 'path';

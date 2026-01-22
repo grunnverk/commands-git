@@ -1,4 +1,4 @@
-# @eldrforge/commands-git - Agentic Guide
+# @grunnverk/commands-git - Agentic Guide
 
 ## Purpose
 
@@ -14,7 +14,7 @@ Git workflow commands for kodrdriv: commit, precommit, clean, review.
 ## Usage
 
 ```typescript
-import * as Git from '@eldrforge/commands-git';
+import * as Git from '@grunnverk/commands-git';
 
 // Execute commands with config
 await Git.commit(config);
@@ -25,11 +25,11 @@ await Git.review(config);
 
 ## Dependencies
 
-- @eldrforge/core - Shared infrastructure
-- @eldrforge/git-tools - Git operations
-- @eldrforge/github-tools - GitHub API
-- @eldrforge/ai-service - AI/LLM integration
-- @eldrforge/shared - Shared utilities
+- @grunnverk/core - Shared infrastructure
+- @grunnverk/git-tools - Git operations
+- @grunnverk/github-tools - GitHub API
+- @grunnverk/ai-service - AI/LLM integration
+- @grunnverk/shared - Shared utilities
 
 ## Package Structure
 

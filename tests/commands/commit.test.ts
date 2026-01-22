@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { Config } from '@eldrforge/core';
+import type { Config } from '@grunnverk/core';
 
 // Mock ALL dependencies BEFORE importing the module
 vi.mock('@riotprompt/riotprompt', () => ({
@@ -11,7 +11,7 @@ vi.mock('dotenv/config', () => ({}));
 
 vi.mock('shell-escape', () => ({ default: (args: string[]) => args.join(' ') }));
 
-vi.mock('@eldrforge/core', () => ({
+vi.mock('@grunnverk/core', () => ({
     DEFAULT_EXCLUDED_PATTERNS: ['node_modules', '.git'],
     DEFAULT_OUTPUT_DIRECTORY: 'output',
     DEFAULT_MAX_DIFF_BYTES: 500000,
@@ -42,7 +42,7 @@ vi.mock('@eldrforge/core', () => ({
     createLoggerAdapter: vi.fn(() => ({})),
 }));
 
-vi.mock('@eldrforge/shared', () => ({
+vi.mock('@grunnverk/shared', () => ({
     CommandError: class CommandError extends Error { code: string; constructor(m: string, c: string) { super(m); this.code = c; } },
     ValidationError: class ValidationError extends Error {},
     ExternalDependencyError: class ExternalDependencyError extends Error {},
@@ -56,7 +56,7 @@ vi.mock('@eldrforge/shared', () => ({
     })),
 }));
 
-vi.mock('@eldrforge/git-tools', () => ({
+vi.mock('@grunnverk/git-tools', () => ({
     run: vi.fn(() => ({ stdout: '', stderr: '' })),
     validateString: vi.fn((s) => s),
     stageFiles: vi.fn(),
@@ -66,11 +66,11 @@ vi.mock('@eldrforge/git-tools', () => ({
     validatePackageJson: vi.fn((p) => p),
 }));
 
-vi.mock('@eldrforge/github-tools', () => ({
+vi.mock('@grunnverk/github-tools', () => ({
     getRecentClosedIssuesForCommit: vi.fn(() => ''),
 }));
 
-vi.mock('@eldrforge/ai-service', () => ({
+vi.mock('@grunnverk/ai-service', () => ({
     createCompletionWithRetry: vi.fn(() => ({ content: 'test response' })),
     getUserChoice: vi.fn(() => 'c'),
     editContentInEditor: vi.fn((content) => ({ content })),
@@ -128,7 +128,7 @@ describe('commit command', () => {
     });
 
     it('handles amend mode', async () => {
-        const { run } = await import('@eldrforge/git-tools');
+        const { run } = await import('@grunnverk/git-tools');
         vi.mocked(run).mockResolvedValueOnce({ stdout: 'abc123', stderr: '' });
 
         const { execute } = await import('../../src/commands/commit');
@@ -230,7 +230,7 @@ describe('commit command', () => {
     });
 
     it('handles allowCommitSplitting', async () => {
-        const { runAgenticCommit } = await import('@eldrforge/ai-service');
+        const { runAgenticCommit } = await import('@grunnverk/ai-service');
         vi.mocked(runAgenticCommit).mockResolvedValueOnce({
             commitMessage: 'feat: combined',
             iterations: 1,

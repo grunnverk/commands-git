@@ -1,17 +1,17 @@
-# @eldrforge/commands-git
+# @grunnverk/commands-git
 
 Git workflow commands for kodrdriv.
 
 ## Installation
 
 ```bash
-npm install @eldrforge/commands-git
+npm install @grunnverk/commands-git
 ```
 
 ## Usage
 
 ```typescript
-import * as Git from '@eldrforge/commands-git';
+import * as Git from '@grunnverk/commands-git';
 
 // Commit with AI-generated message
 await Git.commit(config);
