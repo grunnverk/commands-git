@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { Config } from '@eldrforge/core';
+import type { Config } from '@grunnverk/core';
 
 // Mock ALL dependencies
 vi.mock('@riotprompt/riotprompt', () => ({
@@ -9,7 +9,7 @@ vi.mock('@riotprompt/riotprompt', () => ({
 
 vi.mock('dotenv/config', () => ({}));
 
-vi.mock('@eldrforge/core', () => ({
+vi.mock('@grunnverk/core', () => ({
     DEFAULT_EXCLUDED_PATTERNS: ['node_modules'],
     DEFAULT_OUTPUT_DIRECTORY: 'output',
     DEFAULT_MAX_DIFF_BYTES: 500000,
@@ -34,7 +34,7 @@ vi.mock('@eldrforge/core', () => ({
     filterContent: vi.fn((content) => ({ filtered: content, removed: [] })),
 }));
 
-vi.mock('@eldrforge/shared', () => ({
+vi.mock('@grunnverk/shared', () => ({
     createStorage: vi.fn(() => ({
         readFile: vi.fn(() => '{}'),
         writeFile: vi.fn(),
@@ -42,13 +42,13 @@ vi.mock('@eldrforge/shared', () => ({
     })),
 }));
 
-vi.mock('@eldrforge/git-tools', () => ({
+vi.mock('@grunnverk/git-tools', () => ({
     run: vi.fn(() => ({ stdout: '', stderr: '' })),
     getCurrentBranch: vi.fn(() => 'feature-branch'),
     getDefaultFromRef: vi.fn(() => 'main'),
 }));
 
-vi.mock('@eldrforge/ai-service', () => ({
+vi.mock('@grunnverk/ai-service', () => ({
     createCompletionWithRetry: vi.fn(() => ({ content: 'review content' })),
     runAgenticReview: vi.fn(() => ({
         review: 'Code looks good overall',

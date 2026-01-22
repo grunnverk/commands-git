@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Formatter, Model, Request } from '@riotprompt/riotprompt';
 import type { ChatCompletionMessageParam } from 'openai/resources';
-import { ValidationError, FileOperationError, CommandError, createStorage } from '@eldrforge/shared';
+import { ValidationError, FileOperationError, CommandError, createStorage } from '@grunnverk/shared';
 import {
     getLogger,
     Config,
@@ -19,15 +19,15 @@ import {
     createStorageAdapter,
     createLoggerAdapter,
     filterContent,
-} from '@eldrforge/core';
+} from '@grunnverk/core';
 import {
     createCompletion,
     getUserChoice,
     createReviewPrompt,
     ReviewContent,
     ReviewContext,
-} from '@eldrforge/ai-service';
-import { getReleaseNotesContent, getIssuesContent, handleIssueCreation, type Issue, type ReviewResult } from '@eldrforge/github-tools';
+} from '@grunnverk/ai-service';
+import { getReleaseNotesContent, getIssuesContent, handleIssueCreation, type Issue, type ReviewResult } from '@grunnverk/github-tools';
 import path from 'path';
 import os from 'os';
 import { spawn } from 'child_process';
