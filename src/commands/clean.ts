@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { DEFAULT_OUTPUT_DIRECTORY, getDryRunLogger, getLogger, Config } from '@eldrforge/core';
-import { FileOperationError, createStorage } from '@eldrforge/shared';
+import { DEFAULT_OUTPUT_DIRECTORY, getDryRunLogger, getLogger, Config } from '@grunnverk/core';
+import { FileOperationError, createStorage } from '@grunnverk/shared';
 
 const executeInternal = async (runConfig: Config): Promise<void> => {
     const isDryRun = runConfig.dryRun || false;
