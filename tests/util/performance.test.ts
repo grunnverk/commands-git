@@ -16,11 +16,11 @@ const mockLogger = {
     silly: vi.fn(),
 };
 
-vi.mock('@eldrforge/core', () => ({
+vi.mock('@grunnverk/core', () => ({
     getLogger: () => mockLogger,
 }));
 
-vi.mock('@eldrforge/git-tools', () => ({
+vi.mock('@grunnverk/git-tools', () => ({
     safeJsonParse: (content: string) => JSON.parse(content),
     validatePackageJson: (parsed: any) => parsed,
 }));
