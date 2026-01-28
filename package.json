@@ -1,6 +1,6 @@
 {
   "name": "@grunnverk/commands-git",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Git workflow commands for kodrdriv",
   "main": "dist/index.js",
   "type": "module",
@@ -26,7 +26,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "clean": "rm -rf dist",
-    "precommit": "npm run clean && npm run build && npm run lint && npm run test",
+    "precommit": "npm run lint && npm run build && npm run test",
     "prepublishOnly": "npm run clean && npm run lint && npm run build && npm run test"
   },
   "keywords": [
@@ -43,11 +43,11 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
-    "@grunnverk/ai-service": "^1.5.0",
-    "@grunnverk/core": "^1.5.0",
-    "@grunnverk/git-tools": "^1.5.0",
-    "@grunnverk/github-tools": "^1.5.0",
-    "@grunnverk/shared": "^1.5.2",
+    "@grunnverk/ai-service": "^1.5.1",
+    "@grunnverk/core": "^1.5.2",
+    "@grunnverk/git-tools": "^1.5.1",
+    "@grunnverk/github-tools": "^1.5.1",
+    "@grunnverk/shared": "^1.5.3",
     "@google/generative-ai": "^0.24.1",
     "@riotprompt/riotprompt": "^0.0.21",
     "dotenv": "^16.4.7",
