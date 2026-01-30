@@ -44,7 +44,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "@grunnverk/ai-service": "^1.5.3",
-    "@grunnverk/core": "^1.5.5",
+    "@grunnverk/core": "^1.5.6",
     "@grunnverk/git-tools": "^1.5.4",
     "@grunnverk/github-tools": "^1.5.4",
     "@grunnverk/shared": "^1.5.4",
