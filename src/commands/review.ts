@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Formatter, Model, Request } from '@riotprompt/riotprompt';
+import { Formatter, Model, Request } from '@kjerneverk/riotprompt';
 import type { ChatCompletionMessageParam } from 'openai/resources';
 import { ValidationError, FileOperationError, CommandError, createStorage } from '@grunnverk/shared';
 import {
