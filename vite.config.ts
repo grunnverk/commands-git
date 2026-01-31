@@ -71,7 +71,7 @@ export default defineConfig({
                 '@grunnverk/github-tools',
                 '@grunnverk/ai-service',
                 '@grunnverk/shared',
-                '@riotprompt/riotprompt',
+                '@kjerneverk/riotprompt',
                 'dotenv',
                 'dotenv/config',
                 'openai',
