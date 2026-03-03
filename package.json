@@ -1,6 +1,6 @@
 {
   "name": "@grunnverk/commands-git",
-  "version": "1.5.11",
+  "version": "1.5.12",
   "description": "Git workflow commands for kodrdriv",
   "main": "dist/index.js",
   "type": "module",
@@ -44,9 +44,9 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "@grunnverk/ai-service": "^1.5.7",
-    "@grunnverk/core": "^1.5.11",
+    "@grunnverk/core": "^1.5.12",
     "@grunnverk/git-tools": "^1.5.16",
-    "@grunnverk/github-tools": "^1.5.7",
+    "@grunnverk/github-tools": "^1.5.8",
     "@grunnverk/shared": "^1.5.8",
     "@google/generative-ai": "^0.24.1",
     "@kjerneverk/riotprompt": "^1.0.9",
