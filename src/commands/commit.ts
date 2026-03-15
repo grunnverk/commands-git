@@ -131,6 +131,63 @@ async function getCurrentVersion(storage: any): Promise<string | undefined> {
     }
 }
 
+function isTokenLimitFailure(error: any): boolean {
+    if (!error) {
+        return false;
+    }
+
+    if (error.isTokenLimitError) {
+        return true;
+    }
+
+    const message = String(error.message || error).toLowerCase();
+    return message.includes('input tokens exceed') ||
+        message.includes('maximum context length') ||
+        message.includes('context_length_exceeded') ||
+        message.includes('too many tokens') ||
+        message.includes('token limit');
+}
+
+async function buildFallbackCommitMessage(changedFiles: string[], storage: any): Promise<string> {
+    const fileNames = changedFiles.map(file => file.split('/').pop() || file);
+    const uniqueNames = Array.from(new Set(fileNames));
+    const packageMetadataFiles = new Set(['package.json', 'package-lock.json', 'npm-shrinkwrap.json']);
+    const isPackageMetadataOnly = uniqueNames.length > 0 && uniqueNames.every(name => packageMetadataFiles.has(name));
+
+    if (isPackageMetadataOnly && uniqueNames.includes('package.json')) {
+        const currentVersion = await getCurrentVersion(storage);
+        if (currentVersion) {
+            return `chore: bump version to ${currentVersion}`;
+        }
+        return 'chore: update package metadata';
+    }
+
+    const isDocsOnly = changedFiles.length > 0 && changedFiles.every(file => {
+        const fileName = file.split('/').pop() || file;
+        return file.endsWith('.md') || fileName.toLowerCase().startsWith('readme');
+    });
+    if (isDocsOnly) {
+        return 'docs: update documentation';
+    }
+
+    const isTestsOnly = changedFiles.length > 0 && changedFiles.every(file =>
+        /\.test\.[^.]+$|\.spec\.[^.]+$/.test(file) || file.includes('/test/') || file.includes('/tests/')
+    );
+    if (isTestsOnly) {
+        return 'test: update test coverage';
+    }
+
+    if (uniqueNames.length === 1) {
+        return `chore: update ${uniqueNames[0]}`;
+    }
+
+    if (uniqueNames.length > 1 && uniqueNames.length <= 3) {
+        return `chore: update ${uniqueNames.join(', ')}`;
+    }
+
+    return 'chore: update project files';
+}
+
 // Helper function to edit commit message using editor
 async function editCommitMessageInteractively(commitMessage: string): Promise<string> {
     const templateLines = [
@@ -924,28 +981,53 @@ const executeInternal = async (runConfig: Config) => {
         aiConfig.commands?.commit?.model || aiConfig.model || 'gpt-4o-mini',
         aiConfig.commands?.commit?.reasoning || aiConfig.reasoning || 'low',
         changedFiles.length);
-    const agenticResult = await runAgenticCommit({
-        changedFiles,
-        diffContent,
-        userDirection,
-        logContext,
-        model: aiConfig.commands?.commit?.model || aiConfig.model,
-        maxIterations: runConfig.commit?.maxAgenticIterations || 10,
-        debug: runConfig.debug,
-        debugRequestFile: getOutputPath(outputDirectory, getTimestampedRequestFilename('commit')),
-        debugResponseFile: getOutputPath(outputDirectory, getTimestampedResponseFilename('commit')),
-        storage: aiStorageAdapter,
-        logger: aiLogger,
-        openaiReasoning: aiConfig.commands?.commit?.reasoning || aiConfig.reasoning,
-    });
+    let usedFallbackCommitMessage = false;
+    const agenticResult = await (async () => {
+        try {
+            return await runAgenticCommit({
+                changedFiles,
+                diffContent,
+                userDirection,
+                logContext,
+                model: aiConfig.commands?.commit?.model || aiConfig.model,
+                maxIterations: runConfig.commit?.maxAgenticIterations || 10,
+                debug: runConfig.debug,
+                debugRequestFile: getOutputPath(outputDirectory, getTimestampedRequestFilename('commit')),
+                debugResponseFile: getOutputPath(outputDirectory, getTimestampedResponseFilename('commit')),
+                storage: aiStorageAdapter,
+                logger: aiLogger,
+                openaiReasoning: aiConfig.commands?.commit?.reasoning || aiConfig.reasoning,
+            });
+        } catch (error: any) {
+            if (!isTokenLimitFailure(error)) {
+                throw error;
+            }
+
+            usedFallbackCommitMessage = true;
+            const fallbackMessage = await buildFallbackCommitMessage(changedFiles, storage);
+            logger.warn('COMMIT_AI_TOKEN_LIMIT: AI commit generation exceeded model token limits | Action: Falling back to heuristic commit message | Files: %d', changedFiles.length);
+            logger.warn('COMMIT_AI_FALLBACK_MESSAGE: Using fallback commit message | Message: %s', fallbackMessage);
+
+            return {
+                commitMessage: fallbackMessage,
+                iterations: 0,
+                toolCallsExecuted: 0,
+                suggestedSplits: [],
+                conversationHistory: [],
+                toolMetrics: [],
+            };
+        }
+    })();
 
     const iterations = agenticResult.iterations || 0;
     const toolCalls = agenticResult.toolCallsExecuted || 0;
     logger.info(`🔍 Analysis complete: ${iterations} iterations, ${toolCalls} tool calls`);
 
     // Generate self-reflection output if enabled
-    if (runConfig.commit?.selfReflection) {
+    if (runConfig.commit?.selfReflection && !usedFallbackCommitMessage) {
         await generateSelfReflection(agenticResult, outputDirectory, storage, logger);
+    } else if (runConfig.commit?.selfReflection && usedFallbackCommitMessage) {
+        logger.warn('Skipping self-reflection because commit generation used a fallback message after a token-limit failure');
     }
 
     // Check for suggested splits
