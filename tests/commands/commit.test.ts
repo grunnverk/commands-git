@@ -166,6 +166,28 @@ describe('commit command', () => {
         expect(result).toBeDefined();
     });
 
+    it('falls back to a heuristic message when AI hits token limits', async () => {
+        const { run } = await import('@grunnverk/git-tools');
+        const { runAgenticCommit } = await import('@grunnverk/ai-service');
+
+        vi.mocked(run).mockImplementation(async (command: string) => {
+            if (command.startsWith('git diff --name-only')) {
+                return { stdout: 'package.json\npackage-lock.json\n', stderr: '' } as any;
+            }
+            return { stdout: '', stderr: '' } as any;
+        });
+
+        vi.mocked(runAgenticCommit).mockRejectedValueOnce({
+            message: 'Input tokens exceed the configured limit',
+            isTokenLimitError: true,
+        } as any);
+
+        const { execute } = await import('../../src/commands/commit');
+        const result = await execute(createConfig({ dryRun: true }));
+
+        expect(result).toBe('chore: bump version to 1.0.0');
+    });
+
     it('handles custom output directory', async () => {
         const { execute } = await import('../../src/commands/commit');
         const result = await execute(createConfig({
